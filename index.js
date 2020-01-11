@@ -8,13 +8,16 @@ var url = require('url');
     const baseClient = mbxClient({ accessToken: "pk.eyJ1IjoiYW5hbmQ5Mjg4IiwiYSI6ImNrNHk2dHJpdDA3dHEzZm82Y2hnY252cjEifQ.W-3fm0taJg_noVA_zzJO7g" });
     const direction_service = mbxDirection(baseClient);
     var jsonObj = [];
+    var waypoints_array="2.6;1.5";
     // creating a for loop 
  
 exports.Mycloud = http.createServer(function (req, res) {
   var q = url.parse(req.url, true).query;
   var txt = q.waypoints;
-  console.log(txt);
-  var waypoints_array = txt.split(';');
+  if(txt!=undefined){
+    console.log(txt);
+  console.log("my ft call");
+    waypoints_array = txt.split(';');
   console.log(waypoints_array[0],"way point test")
   for(i=0;i<waypoints_array.length;i++){
     value = waypoints_array[i];
@@ -40,13 +43,21 @@ exports.Mycloud = http.createServer(function (req, res) {
           console.log(ans);
           res.write(JSON.stringify(ans));
           res.end();
+          jsonObj.length = 0;
           // // need to be send to the Android application for display routes in google maps android phone
           // console.log(polyline.toGeoJSON(directions.routes[0].geometry).coordinates);
           // response.send(polyline.toGeoJSON(directions.routes[0].geometry))
         })
         .catch(() => {
+          res.write("some bad happend");
           console.error('Do that');
+          res.end();
       })
   // res.write('Hello World!');
   // res.end();
+  }
+  else{
+    res.write("plese keep not empty");
+    res.end();
+  }
 }).listen(process.env.PORT || 5000);
