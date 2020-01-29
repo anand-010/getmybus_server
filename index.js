@@ -37,16 +37,20 @@ exports.Mycloud = http.createServer(function (req, res) {
           route_array.push([points.latitude,points.longitude]);
           
         });
+        
         // converting the arrays into turf array
         var line = turf.lineString(route_array);
+
         // new point in our project it is the wifi points from the bus location
         var source = turf.point(src);
         var destination = turf.point(dest);
+
         // finding the nearest point on the line to the line
         var snapped = turf.nearestPointOnLine(line, source, {units: 'meters'});
         var snapped_ = turf.nearestPointOnLine(line, destination, {units: 'meters'});
         res.write("snapped");
         res.write("snapped_");
+
         console.log(snapped_.properties.dist, snapped.properties.dist,i++);
         if(snapped.properties.dist <=20.00){
           if(snapped_.properties.dist <=20.00){
@@ -55,8 +59,9 @@ exports.Mycloud = http.createServer(function (req, res) {
         }
       });
       }
+
       console.log(check_array.toString());
-      res.write("everything is fine");
+      res.write(check_array.toString());
       res.end();
 
 }).listen(process.env.PORT || 5000);
