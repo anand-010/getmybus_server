@@ -1,0 +1,45 @@
+#include <TinyGPS.h>
+#include <SoftwareSerial.h>
+#include<LiquidCrystal.h>
+LiquidCrystal lcd(12, 11, 5, 4, 3, 2);
+float lat = 28.5458, lon = 77.1703;
+SoftwareSerial gpsSerial(6, 7); //tx,rx
+TinyGPS gps; // create gps object
+void setup() {
+  Serial.begin(9600); // connect serial
+  Serial.println("The GPS Received Signal:");
+  gpsSerial.begin(9600); // connect gps sensor
+  lcd.begin(16, 2);
+}
+void loop() {
+  while (gpsSerial.available()) { // check for gps data
+    if (gps.encode(gpsSerial.read())) // encode gps data
+    {
+      gps.f_get_position(&lat, &lon); // get latitude and longitude
+      // display position
+      lcd.clear();
+      //  lcd.setCursor(1,0);
+      //  lcd.print("GPS Signal");
+      Serial.print("Position: ");
+      Serial.print("Latitude:");
+      Serial.print(lat, 6);
+      Serial.print(";");
+      Serial.print("Longitude:");
+      Serial.println(lon, 6);
+      lcd.setCursor(1, 0);
+      lcd.print("LAT:");
+      lcd.setCursor(5, 0);
+      lcd.print(String(lat, 7));
+      //  Serial.print(lat);
+      //  Serial.print(" ");
+      lcd.setCursor(1, 1);
+      lcd.print("LON:");
+      lcd.setCursor(5, 1);
+      lcd.print(String(lon, 7));
+    }
+  }
+  String latitude = String(lat, 6);
+  String longitude = String(lon, 6);
+  Serial.println(latitude + "," + longitude);
+  delay(500);
+}
